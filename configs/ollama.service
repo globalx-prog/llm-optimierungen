@@ -1,0 +1,27 @@
+[Unit]
+Description=Ollama Service
+After=network-online.target
+
+[Service]
+ExecStart=/usr/local/bin/ollama serve
+User=ollama
+Group=ollama
+Restart=always
+RestartSec=3
+
+# Systemd OOM-Schutz: Verhindert Systemabsturz bei Speicherüberlauf
+MemoryMax=56G
+OOMScoreAdjust=500
+
+# Pfade & Netzwerkeinstellungen
+Environment="OLLAMA_MODELS=/home/models"
+Environment="OLLAMA_HOST=100.102.224.36:11434"
+
+# VRAM & Performance-Optimierung für AMD Radeon Pro W7800 (48GB VRAM)
+Environment="OLLAMA_FLASH_ATTENTION=1"
+Environment="OLLAMA_GPU_OVERHEAD=1073741824"
+Environment="OLLAMA_CONTEXT_LENGTH=16384"
+Environment="OLLAMA_KEEP_ALIVE=24h"
+
+[Install]
+WantedBy=default.target

@@ -1,0 +1,5 @@
+FROM hf.co/bartowski/Hermes-3-Llama-3.1-70B-GGUF:IQ4_XS
+
+PARAMETER num_ctx 16384
+PARAMETER temperature 0.3
+PARAMETER top_p 0.9

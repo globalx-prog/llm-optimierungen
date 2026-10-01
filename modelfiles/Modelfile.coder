@@ -1,0 +1,8 @@
+FROM hf.co/unsloth/Qwen3-Coder-30B-A3B-Instruct-GGUF:Q8_0
+
+# Voller Puffer für Cline-Sessions und Dateikontexte
+PARAMETER num_ctx 32768
+
+# Präzise Syntax und stabiles Tool-Calling
+PARAMETER temperature 0.2
+PARAMETER top_p 0.95

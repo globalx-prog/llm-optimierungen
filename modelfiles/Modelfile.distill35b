@@ -1,0 +1,4 @@
+FROM hf.co/empero-ai/Qwen3.8-35B-A3B-Distill-GGUF:Q6_K
+
+PARAMETER num_ctx 32768
+PARAMETER temperature 0.6

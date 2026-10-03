@@ -27,11 +27,18 @@ fi
 # 2. Verzeichnisse sicherstellen
 echo "[2/5] Prüfe Modell-Verzeichnis ($MODELS_DIR)..."
 if [ ! -d "$MODELS_DIR" ]; then
-    echo "ℹ Modell-Verzeichnis existiert noch nicht. Erstelle $MODELS_DIR..."
-    sudo mkdir -p "$MODELS_DIR"
-    sudo chown -R "$(id -u):$(id -g)" "$MODELS_DIR" 2>/dev/null || true
+    echo "ℹ Modell-Verzeichnis $MODELS_DIR existiert noch nicht..."
+    if mkdir -p "$MODELS_DIR" 2>/dev/null; then
+        echo "✔ $MODELS_DIR erstellt."
+    elif command -v sudo >/dev/null 2>&1 && sudo mkdir -p "$MODELS_DIR" 2>/dev/null; then
+        sudo chown -R "$(id -u):$(id -g)" "$MODELS_DIR" 2>/dev/null || true
+        echo "✔ $MODELS_DIR mit sudo erstellt."
+    else
+        echo "ℹ Hinweis: Bitte bei Bedarf '$MODELS_DIR' mit 'sudo mkdir -p $MODELS_DIR' anlegen."
+    fi
+else
+    echo "✔ Modell-Verzeichnis gefunden: $MODELS_DIR"
 fi
-echo "✔ Modell-Verzeichnis: $MODELS_DIR"
 
 # 3. Docker-Netzwerk 'ai-network' sicherstellen
 echo "[3/5] Prüfe Docker-Netzwerk 'ai-network'..."

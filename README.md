@@ -118,7 +118,8 @@ sudo ./scripts/apply-ollama-oom-fix.sh
 │   ├── 99-ollama-memory.conf       # Sysctl Kernel-Tuning (Swappiness & Memory Mappings)
 │   └── daemon.json                 # Docker Daemon Log-Rotation Limits
 ├── docs/
-│   └── git-hooks-anleitung.md      # Detailliertes Handbuch zu allen Hooks, Standards & Bypass
+│   ├── git-hooks-anleitung.md      # Detailliertes Handbuch zu allen Hooks, Standards & Bypass
+│   └── kontext-und-speicher-strategien.md # Leitfaden: KV-Cache Tuning, RAG & große Projekte
 ├── modelfiles/                     # Maßgeschneiderte Ollama Modelfiles (80B, 35B, 27B, 31B)
 └── scripts/
     ├── setup-llama-swap.sh         # Setup & Diagnose für llama-swap

@@ -15,7 +15,7 @@ OOMScoreAdjust=500
 
 # Pfade & Netzwerkeinstellungen
 Environment="OLLAMA_MODELS=/home/models"
-Environment="OLLAMA_HOST=100.102.224.36:11434"
+Environment="OLLAMA_HOST=0.0.0.0:11434"
 
 # VRAM & Performance-Optimierung für AMD Radeon Pro W7800 (48GB VRAM)
 Environment="OLLAMA_FLASH_ATTENTION=1"

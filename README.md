@@ -69,8 +69,15 @@ sudo ./scripts/apply-ollama-oom-fix.sh
 │   ├── 99-ollama-memory.conf       # Sysctl Kernel-Konfiguration
 │   └── daemon.json                 # Docker Daemon Log-Limits
 ├── modelfiles/                     # Maßgeschneiderte Ollama Modelfiles
-└── scripts/
-    ├── setup-llama-swap.sh         # Setup & Diagnose für llama-swap
-    ├── setup-pre-commit.sh         # Installation & Aktivierung der Git Hooks
-    └── apply-ollama-oom-fix.sh     # Automatisches Setup-Skript für OOM-Schutz
-```
+├── scripts/
+│   ├── setup-llama-swap.sh         # Setup & Diagnose für llama-swap
+│   ├── setup-pre-commit.sh         # Installation & Aktivierung der Git Hooks
+│   └── apply-ollama-oom-fix.sh     # Automatisches Setup-Skript für OOM-Schutz
+└── WEITERE_SCHRITTE.md             # Detaillierte Roadmap (mcpo, openclaw, CrowdSec, NAS-Sync)
+
+---
+
+## 🗺️ Nächste Schritte & Erweiterungen
+
+Eine detaillierte Aufstellung weiterer machbarer Schritte (u. a. **mcpo** für lokale Tool-Orchestrierung, **openclaw** für Browser-Automation, **CrowdSec**, **KV-Cache Tuning** und **NAS-Sync per GitHub Actions**) findest du in [WEITERE_SCHRITTE.md](WEITERE_SCHRITTE.md).
+

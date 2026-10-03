@@ -47,10 +47,16 @@ curl -s http://127.0.0.1:5002/v1/models | jq .
 sudo ./scripts/apply-ollama-oom-fix.sh
 ```
 
-### C) Pre-Commit Hooks aktivieren (cabumtain-hook)
-```bash
-./scripts/setup-pre-commit.sh
-```
+### C) Pre-Commit Hooks aktivieren
+* **Projekt-Lokal (nur dieses Repo):**
+  ```bash
+  ./scripts/setup-pre-commit.sh
+  ```
+* **Systemweit (für ALLE Repositories auf deinem Rechner):**
+  ```bash
+  ./scripts/setup-global-hooks.sh
+  ```
+  *Ausführliche Dokumentation aller Hooks und Verhaltensweisen: [docs/git-hooks-anleitung.md](docs/git-hooks-anleitung.md)*
 
 ---
 
@@ -68,10 +74,13 @@ sudo ./scripts/apply-ollama-oom-fix.sh
 │   ├── ollama.service              # Systemd Service Unit für Ollama (ROCm & OOM-Schutz)
 │   ├── 99-ollama-memory.conf       # Sysctl Kernel-Konfiguration
 │   └── daemon.json                 # Docker Daemon Log-Limits
+├── docs/
+│   └── git-hooks-anleitung.md      # Detailliertes Handbuch zu allen Hooks & Standards
 ├── modelfiles/                     # Maßgeschneiderte Ollama Modelfiles
 ├── scripts/
 │   ├── setup-llama-swap.sh         # Setup & Diagnose für llama-swap
-│   ├── setup-pre-commit.sh         # Installation & Aktivierung der Git Hooks
+│   ├── setup-pre-commit.sh         # Lokale Installation der Git Hooks
+│   ├── setup-global-hooks.sh       # Systemweite Aktivierung der Hooks
 │   └── apply-ollama-oom-fix.sh     # Automatisches Setup-Skript für OOM-Schutz
 └── WEITERE_SCHRITTE.md             # Detaillierte Roadmap (mcpo, openclaw, CrowdSec, NAS-Sync)
 
@@ -80,4 +89,5 @@ sudo ./scripts/apply-ollama-oom-fix.sh
 ## 🗺️ Nächste Schritte & Erweiterungen
 
 Eine detaillierte Aufstellung weiterer machbarer Schritte (u. a. **mcpo** für lokale Tool-Orchestrierung, **openclaw** für Browser-Automation, **CrowdSec**, **KV-Cache Tuning** und **NAS-Sync per GitHub Actions**) findest du in [WEITERE_SCHRITTE.md](WEITERE_SCHRITTE.md).
+
 

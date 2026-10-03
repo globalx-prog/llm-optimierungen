@@ -1,0 +1,166 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/mostlygeek/llama-swap/refs/heads/main/config-schema.json
+# ==============================================================================
+# llama-swap Configuration — AMD Radeon Pro W7800 (48GB VRAM) & Vulkan/ROCm
+# ==============================================================================
+# Bietet dynamisches On-Demand Laden und Entladen von GGUF-Modellen über eine
+# OpenAI-kompatible API (/v1/chat/completions).
+#
+# Hauptvorteile ggü. reinem Ollama:
+#  - Idle-VRAM-Verbrauch nahe Null dank automatischer TTL (Time-To-Live).
+#  - Unterstützung für echtes Speculative Decoding (Draft-Modell & ngram-mod).
+#  - KV-Cache Quantisierung (-ctk q8_0 -ctv q8_0) halbiert VRAM für lange Kontexte.
+#  - Direkte OpenAI-API Kompatibilität für Open WebUI, Antigravity, Cursor, etc.
+# ==============================================================================
+
+# Maximale Wartezeit (in Sekunden) beim Laden großer 80B Modelle
+healthCheckTimeout: 300
+
+# Logging-Level: debug, info, warn, error
+logLevel: info
+logToStdout: "proxy,http"
+
+# Puffergröße für Request/Response-Aufzeichnungen in der UI (in MB)
+captureBuffer: 15
+
+# Maximale Metriken im Speicher
+metricsMaxInMemory: 1000
+
+# Globale Variablen und Standard-Flags für llama-server
+macros:
+  llama_bin: "llama-server"
+  models_dir: "/models"
+  # GPU-Optimierung für AMD Radeon Pro W7800 (48 GB VRAM):
+  #  - Flash Attention (-fa)
+  #  - Volles Layer-Offloading (-ngl 99)
+  #  - KV-Cache Quantisierung (-ctk q8_0 -ctv q8_0) spart 50% Kontext-VRAM
+  #  - Schneller Start (--no-warmup)
+  #  - Parallele Thread-Nutzung
+  gpu_flags: >-
+    --flash-attn
+    -ngl 99
+    -ctk q8_0
+    -ctv q8_0
+    -b 2048
+    -ub 512
+    --threads 16
+    --no-warmup
+
+# ==============================================================================
+# Modell-Definitionen
+# ==============================================================================
+models:
+  # 1. Flaggschiff Reasoning / Thinking Modell (Großes 80B MoE)
+  "qwen3-next-80b":
+    name: "Qwen3-Next-80B-A3B-Thinking"
+    description: "80B MoE Reasoning Modell mit IQ4_XS Quantisierung & Thinking-Tokens"
+    ttl: 300 # Nach 5 Minuten Inaktivität entladen, um 46 GB VRAM wieder freizugeben
+    cmd: |
+      ${llama_bin}
+      -m ${models_dir}/Qwen3-Next-80B-A3B-Thinking-IQ4_XS.gguf
+      -c 8192
+      ${gpu_flags}
+      --port ${PORT}
+
+  # 2. Ausbalanciertes High-Quality Distill Modell
+  "qwen3.8-35b-distill":
+    name: "Qwen3.8-35B-A3B-Distill"
+    description: "35B Distill Modell mit Q6_K Quantisierung für hohe Präzision"
+    ttl: 600 # 10 Minuten Cache
+    cmd: |
+      ${llama_bin}
+      -m ${models_dir}/Qwen3.8-35B-A3B-Distill-Q6_K.gguf
+      -c 32768
+      ${gpu_flags}
+      --port ${PORT}
+
+  # 3. Allround Modell mit riesigem Kontext (64k)
+  "qwen3.8-27b":
+    name: "Qwen3.8-27B-Instruct"
+    description: "27B Allround-Modell mit Q4_0 oder Q6_K und 65k Kontextfenster"
+    ttl: 600
+    cmd: |
+      ${llama_bin}
+      -m ${models_dir}/Qwen3.8-27B-Instruct-Q6_K.gguf
+      -c 65536
+      ${gpu_flags}
+      --port ${PORT}
+
+  # 4. Kreatives / Unzensiertes Modell
+  "qwen3.8-27b-obliterated":
+    name: "Qwen3.8-27B-Obliterated"
+    description: "Unzensiertes 27B Modell mit Q6_K Quantisierung"
+    ttl: 600
+    cmd: |
+      ${llama_bin}
+      -m ${models_dir}/Qwen3.8-27B-OBLITERATED-Q6_K.gguf
+      -c 49152
+      ${gpu_flags}
+      --port ${PORT}
+
+  # 5. Rollenspiel & Story Modell
+  "artemis-31b":
+    name: "Artemis-31B-v1.1"
+    description: "31B Spezialmodell mit Q8_0 Quantisierung"
+    ttl: 600
+    cmd: |
+      ${llama_bin}
+      -m ${models_dir}/TheDrummer_Artemis-31B-v1.1-Q8_0.gguf
+      -c 32768
+      ${gpu_flags}
+      --port ${PORT}
+
+  # 6. Coding mit Speculative Decoding (Draft-Modell) -> 2-3x Token/s Speedup
+  "qwen-coder-speculative":
+    name: "Qwen-Coder-Speculative"
+    description: "32B Coding Modell beschleunigt durch ein 1.5B Draft-Modell"
+    ttl: 600
+    cmd: |
+      ${llama_bin}
+      -m ${models_dir}/Qwen2.5-Coder-32B-Instruct-Q4_K_M.gguf
+      -md ${models_dir}/Qwen2.5-Coder-1.5B-Instruct-Q4_K_M.gguf
+      --spec-type draft
+      --spec-draft-n-max 8
+      --spec-draft-p-min 0.8
+      -c 32768
+      ${gpu_flags}
+      --port ${PORT}
+
+  # 7. Coding mit Zero-Overhead N-Gram Beschleunigung (perfekt für Boilerplate/JSON/YAML)
+  "qwen-coder-ngram":
+    name: "Qwen-Coder-Ngram"
+    description: "Coding Modell mit N-Gram Beschleunigung ohne separates Draft-Modell"
+    ttl: 600
+    cmd: |
+      ${llama_bin}
+      -m ${models_dir}/Qwen2.5-Coder-32B-Instruct-Q4_K_M.gguf
+      --spec-type ngram-mod
+      -c 32768
+      ${gpu_flags}
+      --port ${PORT}
+
+# ==============================================================================
+# Virtuelle Selektoren / Routing-Aliases
+# ==============================================================================
+selectors:
+  "default":
+    strategy: warm
+    targets:
+      - "qwen3.8-27b"
+      - "qwen3.8-35b-distill"
+    name: "Standard-Modell"
+    description: "Verwendet das aktuell bereits im Speicher geladene Standardmodell"
+
+  "coding":
+    strategy: pin
+    targets:
+      - "qwen-coder-speculative"
+      - "qwen-coder-ngram"
+    name: "Code-Assistent"
+    description: "Schnellstes Coding-Modell mit Spekulativem Decoding"
+
+  "reasoning":
+    strategy: pin
+    targets:
+      - "qwen3-next-80b"
+    name: "Reasoning-Engine"
+    description: "Schwere Logik- und Deep-Thinking-Aufgaben"

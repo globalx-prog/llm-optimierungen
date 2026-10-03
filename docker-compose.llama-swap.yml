@@ -1,0 +1,46 @@
+# ==============================================================================
+# llama-swap / llama-proxy — Docker Compose Stack
+# ==============================================================================
+# Kombiniert llama-swap mit nativem Vulkan/ROCm llama-server (bumuellp/llama-proxy).
+#
+# Integration in Open WebUI:
+#  - Im Open WebUI unter Admin-Panel -> Connections -> OpenAI APIs:
+#    URL: http://llama-proxy:5002/v1
+#    Key: (beliebig, z.B. "llama-swap")
+#
+# Start:  docker compose -f docker-compose.llama-swap.yml up -d
+# Logs:   docker compose -f docker-compose.llama-swap.yml logs -f
+# Stopp:  docker compose -f docker-compose.llama-swap.yml down
+# ==============================================================================
+name: llama-swap
+
+services:
+  llama-proxy:
+    image: ghcr.io/bumuellp/llama-proxy:latest
+    container_name: llama-proxy
+    restart: unless-stopped
+    # Befehl zum Laden der zentralen Konfigurationsdatei
+    command: ["-config", "/app/config.yaml"]
+    # Nur auf Loopback (127.0.0.1) binden; Zugriff für Open WebUI über Docker-Netzwerk
+    ports:
+      - "127.0.0.1:5002:5002"
+    volumes:
+      # Read-Only Mount der Konfiguration
+      - ./configs/llama-swap/config.yaml:/app/config.yaml:ro
+      # Read-Only Mount des Modell-Verzeichnisses (Standard: /home/models)
+      - ${MODELS_PATH:-/home/models}:/models:ro
+    devices:
+      # AMD GPU & Vulkan / ROCm Hardware-Beschleunigung
+      - /dev/dri:/dev/dri
+      - /dev/kfd:/dev/kfd
+    networks:
+      - ai-network
+    # --- Sicherheits-Härtung ---
+    security_opt:
+      - no-new-privileges:true
+    pids_limit: 1024
+
+networks:
+  # Referenziert das existierende Docker-Netzwerk aus ollama-zugriff (ai-network)
+  ai-network:
+    external: true

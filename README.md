@@ -47,6 +47,11 @@ curl -s http://127.0.0.1:5002/v1/models | jq .
 sudo ./scripts/apply-ollama-oom-fix.sh
 ```
 
+### C) Pre-Commit Hooks aktivieren (cabumtain-hook)
+```bash
+./scripts/setup-pre-commit.sh
+```
+
 ---
 
 ## 📁 Repository-Struktur
@@ -54,6 +59,7 @@ sudo ./scripts/apply-ollama-oom-fix.sh
 ```text
 .
 ├── README.md
+├── .pre-commit-config.yaml         # Git Hooks (cabumtain-hook, Linter, Schutz vor GGUF-Upload)
 ├── docker-compose.llama-swap.yml   # Docker Compose für llama-proxy (Vulkan/ROCm)
 ├── configs/
 │   ├── llama-swap/
@@ -65,5 +71,6 @@ sudo ./scripts/apply-ollama-oom-fix.sh
 ├── modelfiles/                     # Maßgeschneiderte Ollama Modelfiles
 └── scripts/
     ├── setup-llama-swap.sh         # Setup & Diagnose für llama-swap
+    ├── setup-pre-commit.sh         # Installation & Aktivierung der Git Hooks
     └── apply-ollama-oom-fix.sh     # Automatisches Setup-Skript für OOM-Schutz
 ```

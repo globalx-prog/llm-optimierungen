@@ -1,0 +1,9 @@
+FROM hf.co/bartowski/Qwen_Qwen3-Next-80B-A3B-Thinking-GGUF:IQ4_XS
+
+# 72 von 80 Layern auf die GPU, 8 Layer im schnellen 61 GB RAM
+PARAMETER num_gpu 72
+
+# Großer 16k Kontext möglich, ohne dass der VRAM überläuft
+PARAMETER num_ctx 16384
+PARAMETER num_predict 8192
+PARAMETER temperature 0.6

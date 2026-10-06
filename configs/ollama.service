@@ -19,10 +19,11 @@ Environment="OLLAMA_HOST=0.0.0.0:11434"
 
 # VRAM & Performance-Optimierung für AMD Radeon Pro W7800 (48GB VRAM)
 Environment="OLLAMA_FLASH_ATTENTION=1"
-Environment="OLLAMA_GPU_OVERHEAD=4294967296"
+Environment="OLLAMA_GPU_OVERHEAD=2147483648"
 Environment="OLLAMA_KV_CACHE_TYPE=q4_0"
 Environment="OLLAMA_CONTEXT_LENGTH=16384"
 Environment="OLLAMA_KEEP_ALIVE=24h"
 
 [Install]
 WantedBy=default.target
+

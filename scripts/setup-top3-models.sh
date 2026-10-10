@@ -15,11 +15,19 @@ YELLOW='\033[1;33m'
 BOLD='\033[1m'
 NC='\033[0m' # No Color
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-REPO_ROOT="$(cd "${SCRIPT_DIR}/../.." && pwd)"
-MODELFILES_DIR="${REPO_ROOT}/llm-optimierungen/modelfiles"
+# Symlink-sichere Ermittlung des Skript- und Modelfile-Verzeichnisses
+SCRIPT_REAL="$(readlink -f "${BASH_SOURCE[0]}")"
+SCRIPT_REAL_DIR="$(dirname "$SCRIPT_REAL")"
 
-clear
+if [ -d "${SCRIPT_REAL_DIR}/../modelfiles" ]; then
+    MODELFILES_DIR="$(cd "${SCRIPT_REAL_DIR}/../modelfiles" && pwd)"
+elif [ -d "/home/clemi/Projekte/LLM/llm-optimierungen/modelfiles" ]; then
+    MODELFILES_DIR="/home/clemi/Projekte/LLM/llm-optimierungen/modelfiles"
+else
+    MODELFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../modelfiles" && pwd)"
+fi
+
+clear 2>/dev/null || true
 cat << "EOF"
 ================================================================================
    _    ___ __  __   _    ____ ___ ____ _____ _____ __  __ 
@@ -37,9 +45,9 @@ echo -e "${BOLD}${CYAN}High-Speed-Speicher:${NC} ~95 GB (45 GB VRAM + 50 GB nutz
 echo -e "${BOLD}[1/4] Prüfe Systemvoraussetzungen...${NC}"
 
 # Prüfe freien Speicherplatz
-FREE_SPACE_GB=$(df -BG /home | awk 'NR==2 {print $4}' | sed 's/G//')
+FREE_SPACE_GB=$(df -BG --output=avail /home 2>/dev/null | tail -n1 | tr -dc '0-9' || echo "100")
 echo -e "  * Freier Festplattenspeicher (/home): ${GREEN}${FREE_SPACE_GB} GB verfügbar${NC}"
-if [ "${FREE_SPACE_GB}" -lt 50 ]; then
+if [ -n "${FREE_SPACE_GB}" ] && [ "${FREE_SPACE_GB}" -lt 50 ]; then
     echo -e "${YELLOW}  [WARNUNG] Weniger als 50 GB frei! Große Modelle benötigen 38–48 GB.${NC}"
 fi
 
@@ -54,7 +62,7 @@ fi
 # Prüfe aktuellen KV-Cache-Modus
 CURRENT_KV="Unbekannt (Standard f16)"
 if [ -f /etc/systemd/system/ollama.service ]; then
-    KV_FOUND=$(grep "OLLAMA_KV_CACHE_TYPE" /etc/systemd/system/ollama.service | cut -d'=' -f2 | tr -d '"' || true)
+    KV_FOUND=$(grep "OLLAMA_KV_CACHE_TYPE" /etc/systemd/system/ollama.service | sed -n 's/.*OLLAMA_KV_CACHE_TYPE=\([^ "]*\).*/\1/p' || true)
     if [ -n "$KV_FOUND" ]; then
         CURRENT_KV="$KV_FOUND"
     fi
@@ -83,7 +91,7 @@ install_model() {
     echo -e "${CYAN}Modelfile: ${MODELFILE_PATH}${NC}"
     echo -e "${BOLD}${BLUE}======================================================================${NC}\n"
 
-    read -p "Möchtest du dieses Modell jetzt herunterladen und einrichten? (j/n): " CONFIRM
+    read -r -p "Möchtest du dieses Modell jetzt herunterladen und einrichten? (j/n): " CONFIRM || true
     if [[ ! "$CONFIRM" =~ ^[jJyY]$ ]]; then
         echo -e "${YELLOW}Überspringe ${MODEL_NAME}.${NC}\n"
         return 0
@@ -131,7 +139,7 @@ ask_variant_and_install() {
     echo -e "  ${BOLD}3)${NC} Beide Varianten installieren"
     echo -e "  ${BOLD}4)${NC} Zurück zum Hauptmenü"
 
-    read -p "Auswahl (1-4): " VAR_CHOICE
+    read -r -p "Auswahl (1-4): " VAR_CHOICE || true
     case "$VAR_CHOICE" in
         1)
             install_model "${BASE_NAME}-speed" "${IQ4_TAG}" "${SPEED_FILE}" "${DESC} (Speed IQ4_XS - 100% VRAM)"
@@ -169,7 +177,7 @@ toggle_kv_cache() {
     echo -e "     - Ideal für: Wissenschaftliche RAG-Suchen und Quality-Modelle.\n"
     echo -e "  ${BOLD}3)${NC} Abbrechen und zurück"
 
-    read -p "Gewünschter Modus (1-3): " KV_CHOICE
+    read -r -p "Gewünschter Modus (1-3): " KV_CHOICE || true
     case "$KV_CHOICE" in
         1)
             NEW_VAL="q4_0"
@@ -218,7 +226,7 @@ while true; do
     echo -e "  ${BOLD}q)${NC} Beenden"
     echo -e "${BOLD}${YELLOW}======================================================================${NC}"
 
-    read -p "Deine Auswahl (1-7 oder q): " MAIN_CHOICE
+    read -r -p "Deine Auswahl (1-7 oder q): " MAIN_CHOICE || true
 
     case "$MAIN_CHOICE" in
         1)
@@ -281,6 +289,6 @@ while true; do
     esac
 
     echo ""
-    read -p "Drücke [Enter] für das Hauptmenü..."
-    clear
+    read -r -p "Drücke [Enter] für das Hauptmenü..." || true
+    clear 2>/dev/null || true
 done

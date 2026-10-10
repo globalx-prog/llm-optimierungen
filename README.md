@@ -41,13 +41,47 @@ Zentrale Drehscheibe für Konfigurationen, Skripte und Tuning-Parameter zur Maxi
 * **Secret-Scanner**: Blockiert Commits mit privaten Schlüsseln (`BEGIN OPENSSH PRIVATE KEY`) oder Cloudflare-Tokens (`TUNNEL_TOKEN=ey...`).
 * **Linter**: Automatische Validierung von Shell-Skripten (`shellcheck`) und YAML-Dateien (`yamllint`).
 * **Tag Immutability (`pre-push`)**: Schützt SemVer Release-Tags (`v*.*.*`) vor dem Überschreiben oder Löschen.
-* **Systemweite Nutzung**: Mit `./scripts/setup-global-hooks.sh` für **alle** Git-Repositories auf dem Rechner aktivierbar.
+* **Systemweite Nutzung**: Mit `./setup/04-setup-global-hooks.sh` für **alle** Git-Repositories auf dem Rechner aktivierbar.
+
+---
+
+## 📁 Verzeichnis-Struktur (NAS-Standard)
+
+```text
+llm-optimierungen/
+├── configs/                     # Systemd-Overrides, llama-swap config, daemon.json
+│   ├── 99-ollama-memory.conf
+│   ├── daemon.json
+│   ├── ollama.service
+│   ├── llama-swap.service
+│   └── llama-swap/config.yaml
+├── modelfiles/                  # Maßgeschneiderte Ollama-Modelfiles
+│   ├── Modelfile._qwen3_coder_A3B
+│   ├── Modelfile.distill35b
+│   ├── Modelfile.next80b-hybrid
+│   ├── Modelfile.qwen3_next80b
+│   └── ...
+├── docs/                        # Ausführliche Anleitungen
+│   ├── git-hooks-anleitung.md
+│   ├── kontext-und-speicher-strategien.md
+│   ├── aktuelle-modelle.md
+│   ├── vram-und-modell-leitfaden.md
+│   └── weitere-schritte-roadmap.md
+├── scripts/                     # Symlinks zu den Setup-Skripten
+├── setup/                       # Nummerierte Setup-Skripte
+│   ├── 01-apply-ollama-oom-fix.sh
+│   ├── 02-setup-llama-swap.sh
+│   ├── 03-setup-pre-commit.sh
+│   └── 04-setup-global-hooks.sh
+├── docker-compose.llama-swap.yml# llama-swap Container Definition
+└── README.md
+```
 
 ---
 
 ## 📋 Offene Aufgaben & Todos (Roadmap)
 
-Detaillierte Anleitungen und Vorlagen zu allen Punkten befinden sich in [WEITERE_SCHRITTE.md](WEITERE_SCHRITTE.md).
+Detaillierte Anleitungen und Vorlagen zu allen Punkten befinden sich in [docs/weitere-schritte-roadmap.md](docs/weitere-schritte-roadmap.md).
 
 - [ ] **TODO 1: GGUF-Modelle in `/home/models` bereitstellen**
   - GGUF-Dateien für die in `config.yaml` definierten Routen herunterladen oder per Symlink verknüpfen (z. B. `Qwen3-Next-80B-A3B-Thinking-IQ4_XS.gguf`).

@@ -1,0 +1,14 @@
+FROM hf.co/bartowski/DeepSeek-R1-Distill-Llama-70B-GGUF:IQ4_XS
+
+# 100% VRAM (Alle 80 Layer auf AMD Radeon Pro W7800)
+# Modellgröße: ~38.0 GB -> passt komplett in VRAM -> max. Speed (~42-48 t/s)
+PARAMETER num_gpu 999
+
+# Kontext & Batching
+PARAMETER num_ctx 16384
+PARAMETER num_batch 1024
+PARAMETER num_predict 16384
+
+# DeepSeek R1 Empfehlung: Temperatur 0.6 für Reasoning (<think> Spuren)
+PARAMETER temperature 0.6
+PARAMETER top_p 0.95

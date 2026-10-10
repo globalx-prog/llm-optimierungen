@@ -1,0 +1,15 @@
+FROM hf.co/bartowski/Mixtral-8x22B-Instruct-v0.1-GGUF:Q3_K_M
+
+# Hybrid MoE: 32 Layer auf GPU (~38.7 GB VRAM), 24 Layer in System-RAM (~29.3 GB RAM)
+# Da MoE nur 39B aktive Parameter pro Token nutzt, läuft es mit flüssigen ~18-22 t/s!
+PARAMETER num_gpu 32
+PARAMETER num_thread 6
+
+# Kontext & Batching
+PARAMETER num_ctx 16384
+PARAMETER num_batch 512
+PARAMETER num_predict 8192
+
+# Sampling
+PARAMETER temperature 0.5
+PARAMETER top_p 0.9

@@ -1,12 +1,13 @@
 # Übersicht der aktuellen LLM-Modelle (Ollama)
 
-Übersicht aller lokal installierten und für die **AMD Radeon Pro W7800 (48 GB VRAM)** optimierten LLM-Modelle.
+> **Hardware:** AMD Radeon Pro W7800 (48 GB VRAM, Netto ~45,0 GiB) | ROCm 6.4 nativ  
+> 📘 **Vollständige Modellbewertung & Benchmarks:** Siehe zentrales Dokument [`../../docs/MODELL_UEBERSICHT_UND_BEWERTUNG.md`](../../docs/MODELL_UEBERSICHT_UND_BEWERTUNG.md)  
 
 ---
 
 ## 📋 Modell-Übersicht
 
-| Modell-Alias | Größe | Basis-Modell & Quant | Kontext-Fenster (`num_ctx`) | Spezialisierung / Empfohlene Nutzung |
+| Modell / Alias | Dateigröße / VRAM | Basis / Quantisierung | Empfohlener Kontext (`num_ctx`) | Haupt-Einsatzzweck & Profil |
 | :--- | :--- | :--- | :--- | :--- |
 | **`qwen3-coder`** | 32 GB (bis 44 GB @128k) | `Qwen3-Coder-30B-A3B-Instruct (Q8_0)` | **32.768** *(bis 128k möglich)* | **Primary Coding Driver**: Höchste Präzision bei Syntax, Refactoring und stabilem Tool-Calling in Cline. |
 | **`qwen3.8-35b-distill`** | 30 GB | `Qwen3.8-35B-A3B-Distill (Q6_K)` | **32.768** | **Schneller Allrounder & Reasoning**: Sehr ausgewogenes Verhältnis aus Geschwindigkeit und logischer Tiefe. |
@@ -19,24 +20,10 @@
 
 ---
 
-## ⚙️ Nutzung in Cline (VS Code)
+## ⚙️ Wichtige Start- & Kontext-Parameter
 
-* **API Provider**: `Ollama`
-* **Base URL**: `http://localhost:11434` *(oder `http://100.102.224.36:11434`)*
-* **Model ID**: Modell-Alias aus der Tabelle oben eintragen (z. B. `qwen3-coder`)
-* **Context Window**: Auf den entsprechenden `num_ctx`-Wert aus der Tabelle einstellen.
-
----
-
-## 🚀 Schnellausführung im Terminal
-
-```bash
-# Coding & Primär-Treiber starten
-ollama run qwen3-coder
-
-# Deep Thinking 80B starten
-ollama run qwen3-next-80b
-
-# Status des aktuell geladenen Modells im VRAM anzeigen
-ollama ps
-```
+* **Thinking-Modus (z. B. `qwen3-next-80b`):**  
+  `temperature: 1.0`, `top_p: 0.95`, `presence_penalty: 0.0`
+* **Instruct-Modus (z. B. `qwen3-coder`):**  
+  `temperature: 0.2` bis `0.7`, `top_p: 0.8`, `presence_penalty: 1.5`
+* **Cline (VS Code):** Kontext zwingend manuell auf **`32768`** setzen!

@@ -51,6 +51,15 @@ else
     exit 1
 fi
 
+# Prüfe aktuellen KV-Cache-Modus
+CURRENT_KV="Unbekannt (Standard f16)"
+if [ -f /etc/systemd/system/ollama.service ]; then
+    KV_FOUND=$(grep "OLLAMA_KV_CACHE_TYPE" /etc/systemd/system/ollama.service | cut -d'=' -f2 | tr -d '"' || true)
+    if [ -n "$KV_FOUND" ]; then
+        CURRENT_KV="$KV_FOUND"
+    fi
+fi
+echo -e "  * Aktiver KV-Cache-Modus: ${BOLD}${GREEN}${CURRENT_KV}${NC}"
 echo -e "  * Modelfiles-Verzeichnis: ${GREEN}${MODELFILES_DIR}${NC}\n"
 
 # 2. Hilfsfunktionen
@@ -110,11 +119,13 @@ ask_variant_and_install() {
 
     echo -e "\n${BOLD}${YELLOW}Welche Variante von ${BASE_NAME} möchtest du installieren?${NC}"
     echo -e "  ${BOLD}1)${NC} ${GREEN}Speed-Variante (IQ4_XS - EMPFOHLEN)${NC}"
-    echo -e "     -> 100% VRAM (48 Layers auf W7800), keine CPU-Drossel"
-    echo -e "     -> Geschwindigkeit: ${BOLD}⚡ ~40–48 Tokens/s${NC} (~50% schneller!)"
+    echo -e "     -> 100% VRAM (alle Layer auf W7800), keine PCIe-Drossel"
+    echo -e "     -> Qualität: ~98,5% der Q8-Leistung (imatrix geschützt)"
+    echo -e "     -> Geschwindigkeit: ${BOLD}⚡ ~40–48 Tokens/s${NC} (+60% schneller!)"
     echo -e "     -> Dateigröße: ~38–39 GB"
     echo -e "  ${BOLD}2)${NC} ${BLUE}Quality-Variante (Q4_K_M - Hybrid)${NC}"
     echo -e "     -> Hybrid-Modus: ~80% GPU / ~20% System-RAM"
+    echo -e "     -> Qualität: ~99,1% der Q8-Leistung (höchste 4-Bit-Präzision)"
     echo -e "     -> Geschwindigkeit: ${BOLD}🚄 ~26–28 Tokens/s${NC}"
     echo -e "     -> Dateigröße: ~43–47 GB"
     echo -e "  ${BOLD}3)${NC} Beide Varianten installieren"
@@ -141,6 +152,55 @@ ask_variant_and_install() {
     esac
 }
 
+toggle_kv_cache() {
+    echo -e "\n${BOLD}${BLUE}======================================================================${NC}"
+    echo -e "${BOLD}${BLUE}             KV-CACHE QUANTISIERUNG (KONTEXT-PRÄZISION)               ${NC}"
+    echo -e "${BOLD}${BLUE}======================================================================${NC}"
+    echo -e "Aktuell aktiv: ${BOLD}${GREEN}${CURRENT_KV}${NC}\n"
+    echo -e "  ${BOLD}1)${NC} ${GREEN}q4_0 Modus (Standard & Headroom)${NC}"
+    echo -e "     - VRAM-Bedarf für 16k Kontext: ca. 2,0 GB"
+    echo -e "     - Vorteil: Lässt maximalen VRAM frei. Alle 70B/72B Speed-Modelle"
+    echo -e "       passen zu 100% in die W7800 (auch bis 32k Kontext!)."
+    echo -e "     - Qualität: Praktisch identisch bei <16k Kontext.\n"
+    echo -e "  ${BOLD}2)${NC} ${CYAN}q8_0 Modus (Maximale Kontext-Präzision)${NC}"
+    echo -e "     - VRAM-Bedarf für 16k Kontext: ca. 4,0 GB"
+    echo -e "     - Vorteil: 99,99% FP16-Qualität im Chat-Verlauf. DeepSeek 70B und"
+    echo -e "       Llama 3.3 70B passen weiterhin zu 100% in VRAM (~42 GB VRAM)."
+    echo -e "     - Ideal für: Wissenschaftliche RAG-Suchen und Quality-Modelle.\n"
+    echo -e "  ${BOLD}3)${NC} Abbrechen und zurück"
+
+    read -p "Gewünschter Modus (1-3): " KV_CHOICE
+    case "$KV_CHOICE" in
+        1)
+            NEW_VAL="q4_0"
+            ;;
+        2)
+            NEW_VAL="q8_0"
+            ;;
+        *)
+            return 0
+            ;;
+    esac
+
+    if [ "$NEW_VAL" == "$CURRENT_KV" ]; then
+        echo -e "${YELLOW}Dieser Modus ist bereits aktiv.${NC}"
+        return 0
+    fi
+
+    echo -e "\nSetze OLLAMA_KV_CACHE_TYPE=${NEW_VAL} in /etc/systemd/system/ollama.service..."
+    if [ -w /etc/systemd/system/ollama.service ]; then
+        sed -i "s/Environment=\"OLLAMA_KV_CACHE_TYPE=.*/Environment=\"OLLAMA_KV_CACHE_TYPE=${NEW_VAL}\"/" /etc/systemd/system/ollama.service
+        systemctl daemon-reload
+        systemctl restart ollama
+        CURRENT_KV="$NEW_VAL"
+        echo -e "${GREEN}✓ Erfolgreich auf ${NEW_VAL} umgestellt und Ollama neu gestartet.${NC}"
+    else
+        echo -e "${YELLOW}Root-Rechte erforderlich. Bitte folgenden Befehl ausführen:${NC}"
+        echo -e "  sudo sed -i 's/Environment=\"OLLAMA_KV_CACHE_TYPE=.*/Environment=\"OLLAMA_KV_CACHE_TYPE=${NEW_VAL}\"/' /etc/systemd/system/ollama.service"
+        echo -e "  sudo systemctl daemon-reload && sudo systemctl restart ollama"
+    fi
+}
+
 # 3. Interaktives Hauptmenü
 while true; do
     echo -e "${BOLD}${YELLOW}======================================================================${NC}"
@@ -154,10 +214,11 @@ while true; do
     echo -e "  ${BOLD}5)${NC} 🔀 ${BLUE}Mixtral 8x22B (141B MoE)${NC}   (141B MoE Gigant, ~20 t/s)"
     echo -e "  --------------------------------------------------------------------"
     echo -e "  ${BOLD}6)${NC} 🚀 ${GREEN}ALLE TOP 3 SPEED-MODELLE AUF EINMAL${NC} (Qwen 72B + R1 70B + Llama 70B)"
+    echo -e "  ${BOLD}7)${NC} ⚙️  ${YELLOW}KV-Cache Modus prüfen / umschalten${NC} (Aktuell: ${BOLD}${GREEN}${CURRENT_KV}${NC})"
     echo -e "  ${BOLD}q)${NC} Beenden"
     echo -e "${BOLD}${YELLOW}======================================================================${NC}"
 
-    read -p "Deine Auswahl (1-6 oder q): " MAIN_CHOICE
+    read -p "Deine Auswahl (1-7 oder q): " MAIN_CHOICE
 
     case "$MAIN_CHOICE" in
         1)
@@ -207,12 +268,15 @@ while true; do
             install_model "deepseek-r1-70b-speed" "hf.co/bartowski/DeepSeek-R1-Distill-Llama-70B-GGUF:IQ4_XS" "Modelfile.deepseek-r1-70b-speed" "DeepSeek-R1-70B Speed"
             install_model "llama3.3-70b-speed" "hf.co/bartowski/Llama-3.3-70B-Instruct-GGUF:IQ4_XS" "Modelfile.llama3.3-70b-speed" "Llama 3.3 70B Speed"
             ;;
+        7)
+            toggle_kv_cache
+            ;;
         q|Q)
             echo -e "\n${GREEN}Setup beendet. Viel Erfolg beim Experimentieren!${NC}\n"
             break
             ;;
         *)
-            echo -e "\n${RED}Ungültige Eingabe! Bitte 1-6 oder q wählen.${NC}\n"
+            echo -e "\n${RED}Ungültige Eingabe! Bitte 1-7 oder q wählen.${NC}\n"
             ;;
     esac
 

@@ -12,6 +12,8 @@ Zentrale Drehscheibe für Konfigurationen, Skripte und Tuning-Parameter zur Maxi
 | **Maßgeschneiderte Modelfiles** | ✅ Live | Qwen3-Next-80B, Qwen3.8-35B-Distill, Qwen3.8-27B, Artemis-31B |
 | **llama-swap & llama-proxy Stack** | ✅ Live | On-Demand Model Swapping, Idle-VRAM = 0 MB, Port 5002 im `ai-network` |
 | **Pre-Commit Hooks (Lokal & Global)** | ✅ Live | Conventional Commits, GGUF-Großdatei-Sperre (>2 MB), Secret-Scanning |
+| **llm-speedup (Speculative Decoding)** | ✅ Live | +269% Speedup (33.6 t/s bei 72B) via `llama-speedup` auf Port 5002 |
+| **spracheingabe-setup (Voice-Stack)** | 📦 Bereit | Lokaler CPU-Whisper (`faster-whisper-large-v3-turbo`, 0 MB VRAM) + Piper TTS |
 | **Dokumentation & Handbücher** | ✅ Live | Detaillierte Hook-Anleitung & Roadmap für Homelab-Ausbau |
 | **mcpo (Model Context Protocol Gateway)**| 🔲 TODO | Port 9000 für Tools & lokale SearXNG-Suche |
 | **Speculative Decoding Benchmark** | 🔲 TODO | 1.5B Draft-Modell für 2–3x Token/s Speedup auf W7800 |
@@ -73,6 +75,8 @@ llm-optimierungen/
 │   ├── 02-setup-llama-swap.sh
 │   ├── 03-setup-pre-commit.sh
 │   └── 04-setup-global-hooks.sh
+├── llm-speedup/                 # Speculative Decoding Stack (Port 5002, 70B/72B + 1.5B Draft)
+├── spracheingabe-setup/         # Lokaler Voice-Stack (Whisper STT CPU Port 8000, Piper TTS, Wayland-Diktat)
 ├── docker-compose.llama-swap.yml# llama-swap Container Definition
 └── README.md
 ```

@@ -4,9 +4,9 @@ FROM hf.co/bartowski/DeepSeek-R1-Distill-Llama-70B-GGUF:IQ4_XS
 # Modellgröße: ~38.0 GB -> passt komplett in VRAM -> max. Speed (~42-48 t/s)
 PARAMETER num_gpu 999
 
-# Kontext & Batching
-PARAMETER num_ctx 16384
-PARAMETER num_batch 1024
+# Kontext & Batching (32k passt voll in VRAM)
+PARAMETER num_ctx 32768
+PARAMETER num_batch 2048
 PARAMETER num_predict 16384
 
 # DeepSeek R1 Empfehlung: Temperatur 0.6 für Reasoning (<think> Spuren)

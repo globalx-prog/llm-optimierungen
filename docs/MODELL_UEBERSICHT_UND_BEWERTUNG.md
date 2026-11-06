@@ -10,18 +10,18 @@
 
 | Modell & Entwickler | Größe & Quant | Hardware-Modus | Coding & Cline (1-10) | Deep Reasoning & Mathe (1-10) | Allround & Agenten (1-10) | RAG & Kontext (1-10) | Kreativ & Unzensiert (1-10) | Speed auf W7800 | Gesamt Score (100) |
 | :--- | :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| 👑 **`Qwen 2.5 72B Instruct`** *(Alibaba)* | ~43 GB (`Q4_K_M`) | 82% GPU / 18% RAM | **9.8** 🥇 | 9.5 | 9.4 | 9.2 | 8.0 | 🚄 ~28 t/s | **96 / 100** |
-| 🧠 **`DeepSeek-R1-Distill-70B`** *(DeepSeek)* | ~43 GB (`Q4_K_M`) | 80% GPU / 20% RAM | 9.2 | **10.0** 🥇 | 9.0 | 8.8 | 7.8 | 🚄 ~28 t/s | **95 / 100** |
-| 🌐 **`Llama 3.3 70B Instruct`** *(Meta)* | ~43 GB (`Q4_K_M`) | 80% GPU / 20% RAM | 9.1 | 9.2 | **9.8** 🥇 | 9.4 | 8.8 | 🚄 ~28 t/s | **95 / 100** |
+| 👑 **`Qwen 2.5 72B Instruct`** *(Alibaba)* | ~40 GB (`IQ4_XS`) | **100% VRAM** (80/80 Layer) | **9.8** 🥇 | 9.5 | 9.4 | 9.2 | 8.0 | **11,9 t/s (Ollama) / 33,6 t/s (Spek.)** | **96 / 100** |
+| 🧠 **`DeepSeek-R1-Distill-70B`** *(DeepSeek)* | ~38 GB (`IQ4_XS`) | **100% VRAM** (80/80 Layer) | 9.2 | **10.0** 🥇 | 9.0 | 8.8 | 7.8 | **13,0 t/s (Ollama) / 14,0 t/s (N-Gram)** | **95 / 100** |
+| 🌐 **`Llama 3.3 70B Instruct`** *(Meta)* | ~38 GB (`IQ4_XS`) | **100% VRAM** (80/80 Layer) | 9.1 | 9.2 | **9.8** 🥇 | 9.4 | 8.8 | **12,9 t/s (Ollama) / 25,6 t/s (Spek.)** | **95 / 100** |
 | ⚡ **`qwen3-next-80b-16k`** *(Dein Modell)* | 42 GB (`IQ4_XS`) | 81% GPU / 19% RAM | 8.5 | 9.7 | 8.8 | 8.5 | 8.0 | ⚡ **36,5 t/s** | **92 / 100** |
 | ⚡ **`qwen3-next-80b-32k`** *(Dein Modell)* | 42 GB (`IQ4_XS`) | 75% GPU / 25% RAM | 8.5 | 9.7 | 8.8 | 9.2 | 8.0 | 🚄 ~28 t/s | **92 / 100** |
 | 🐘 **`Mistral-Large-2407 (123B)`** *(Mistral)* | ~68 GB (`Q4_K_M`) | 55% GPU / 45% RAM | 9.3 | 9.4 | 9.6 | **9.8** | 9.0 | 🚗 ~12–15 t/s | **94 / 100** |
 | 🔀 **`Mixtral 8x22B (141B MoE)`** *(Mistral)* | ~68 GB (`Q3_K_M`) | 60% GPU / 40% RAM | 8.8 | 8.9 | 9.2 | 9.4 | 8.8 | 🚄 ~18–22 t/s | **92 / 100** |
 | 📚 **`Cohere Command R+ (104B)`** *(Cohere)* | ~55 GB (`Q3/Q4`) | 65% GPU / 35% RAM | 8.5 | 8.2 | 9.0 | **10.0** 🥇 | 8.0 | 🚗 ~14–18 t/s | **89 / 100** |
-| 💻 **`qwen3-coder` (30B)** *(Dein Modell)* | 32 GB (`Q8_0`) | **100% VRAM** | 9.0 | 8.0 | 8.2 | 8.5 | 6.5 | ⚡ **51,5 t/s** | **85 / 100** |
-| 🎯 **`qwen3.8-35b-distill`** *(Dein Modell)* | 30 GB (`Q6_K`) | **100% VRAM** | 8.2 | 8.5 | 8.5 | 8.0 | 7.5 | ⚡ **48 t/s** | **83 / 100** |
-| 🔓 **`qwen3-obliterated`** *(Dein Modell)* | 23 GB (`Q6_K`) | **100% VRAM** | 7.8 | 7.5 | 8.2 | 8.8 | **9.6** (unzensiert) | ⚡ **60 t/s** | **83 / 100** |
-| 🎭 **`artemis-31b`** *(Dein Modell)* | 33 GB (`Q8_0`) | **100% VRAM** | 7.0 | 7.2 | 8.0 | 8.0 | **9.8** 🥇 | ⚡ **45 t/s** | **81 / 100** |
+| 💻 **`qwen3-coder` (30B)** *(Dein Modell)* | 18–32 GB (`Q4/Q8`) | **100% VRAM** | **9.5** 🥇 | 8.5 | 8.8 | 9.0 | 7.5 | ⚡ **61,6 t/s (Q8) / 80 t/s (Speed)** | **94 / 100** |
+| 🎯 **`qwen3.8-35b-distill`** *(Dein Modell)* | 30 GB (`Q6_K`) | **100% VRAM** | 8.6 | 8.8 | 8.8 | 8.8 | 7.5 | ⚡ **64,7 t/s (gemessen)** | **88 / 100** |
+| 🔓 **`qwen3-obliterated`** *(Dein Modell)* | 23 GB (`Q6_K`) | **100% VRAM** | 7.8 | 7.5 | 8.2 | 8.8 | **9.6** (unzensiert) | ⚡ **17,7 t/s (gemessen)** | **83 / 100** |
+| 🎭 **`artemis-31b`** *(Dein Modell)* | 33 GB (`Q8_0`) | **100% VRAM** | 7.0 | 7.2 | 8.0 | 8.0 | **9.8** 🥇 | ⚡ **14,7 t/s (gemessen)** | **81 / 100** |
 | 🚀 **`qwen3.8-27b-q4`** *(Dein Modell)* | 16 GB (`Q4_0`) | **100% VRAM** | 7.5 | 7.2 | 7.8 | 9.5 (65k VRAM) | 7.0 | 🚀 **75 t/s** | **79 / 100** |
 
 ---

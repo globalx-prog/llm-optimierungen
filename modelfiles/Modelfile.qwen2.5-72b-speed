@@ -4,12 +4,12 @@ FROM hf.co/bartowski/Qwen2.5-72B-Instruct-GGUF:IQ4_XS
 # Modellgröße: ~39.7 GB -> passt komplett in VRAM -> max. Speed (~40-44 t/s)
 PARAMETER num_gpu 999
 
-# Kontext & Batching
-PARAMETER num_ctx 16384
-PARAMETER num_batch 1024
+# Kontext & Batching (32k passt zu 100% in VRAM)
+PARAMETER num_ctx 32768
+PARAMETER num_batch 2048
 PARAMETER num_predict 8192
 
 # Sampling-Parameter für präzisen Code & Tool Use
 PARAMETER temperature 0.3
 PARAMETER top_p 0.8
-PARAMETER repetition_penalty 1.05
+PARAMETER repeat_penalty 1.05

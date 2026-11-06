@@ -1,0 +1,16 @@
+FROM hf.co/bartowski/Llama-3.3-70B-Instruct-abliterated-GGUF:IQ4_XS
+
+# 100% VRAM Allokation für AMD Radeon Pro W7800 (48 GB)
+# Modellgröße: ~37.9 GB -> Unzensiertes 70B Flaggschiff ohne Weigerungs-Vektoren
+PARAMETER num_gpu 999
+
+# Kontext & Batching (32k Token)
+PARAMETER num_ctx 32768
+PARAMETER num_batch 2048
+PARAMETER num_predict 8192
+
+# Sampling: Unzensiert & kreativ, aber präzise
+PARAMETER temperature 0.7
+PARAMETER top_p 0.9
+PARAMETER repeat_penalty 1.05
+

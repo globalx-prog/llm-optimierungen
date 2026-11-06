@@ -6,3 +6,6 @@
 
 # Logs & Runtime
 *.log
+
+# Secrets
+**/.env

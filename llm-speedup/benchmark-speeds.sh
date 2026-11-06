@@ -1,0 +1,1 @@
+/home/clemi/Projekte/LLM/scripts/benchmark-speeds.sh

@@ -1,0 +1,55 @@
+# ==============================================================================
+# LLM Speedup — Docker Compose Stack für Speculative Decoding
+# ==============================================================================
+# Stellt spekulativ beschleunigte 70B/72B Modelle über llama-proxy bereit.
+# 
+# API-Endpunkt für Open WebUI & VS Code:
+#   http://localhost:5002/v1
+#   (im Docker-Netzwerk: http://llama-speedup:5002/v1)
+# ==============================================================================
+name: llm-speedup
+
+services:
+  llama-speedup:
+    image: ghcr.io/mostlygeek/llama-swap:rocm
+    container_name: llama-speedup
+    restart: unless-stopped
+    command: ["-config", "/app/config.yaml", "-listen", "0.0.0.0:8080"]
+    environment:
+      - GPU_MAX_ALLOC_PERCENT=100
+      - GPU_SINGLE_ALLOC_PERCENT=100
+      - GPU_MAX_HEAP_SIZE=100
+      - HSA_OVERRIDE_GFX_VERSION=11.0.0
+    ports:
+      # Auf Loopback (127.0.0.1) binden für sicheren lokalen Zugriff
+      # Host: 5002 -> Container: 8080 (llama-swap Standard-Port)
+      - "127.0.0.1:5002:8080"
+    volumes:
+      # Read-Only Mount der Konfigurationsdatei
+      - ./config.yaml:/app/config.yaml:ro
+      # Read-Only Mount des Modellverzeichnisses (Standard: /home/models)
+      - ${MODELS_PATH:-/home/models}:/models:ro
+      # Verzeichnis-Mount für DRI Gerätedateien
+      - /dev/dri:/dev/dri
+    devices:
+      # AMD GPU Hardware-Beschleunigung (ROCm & Vulkan)
+      # Spezifische Geräteknoten statt Verzeichnis
+      - /dev/kfd:/dev/kfd
+      - /dev/dri/renderD128:/dev/dri/renderD128
+      - /dev/dri/card0:/dev/dri/card0
+    group_add:
+      - "44"
+      - "990"
+    device_cgroup_rules:
+      - 'c 226:* rmw'
+      - 'c 510:* rmw'
+    networks:
+      - ai-network
+    security_opt:
+      - no-new-privileges:true
+    pids_limit: 2048
+
+networks:
+  ai-network:
+    name: ai-network
+    external: true

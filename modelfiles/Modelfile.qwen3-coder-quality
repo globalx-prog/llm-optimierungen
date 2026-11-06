@@ -1,0 +1,16 @@
+FROM hf.co/unsloth/Qwen3-Coder-30B-A3B-Instruct-GGUF:Q8_0
+
+# 100% VRAM Allokation für AMD Radeon Pro W7800 (48 GB)
+# Q8_0 Maximale Präzision (~32 GB) -> passt voll in 48 GB VRAM
+PARAMETER num_gpu 999
+
+# Maximierter sicherer Puffer im 48 GB VRAM (~35.5 GB gesamt mit q4_0 KV-Cache)
+PARAMETER num_ctx 65536
+PARAMETER num_batch 2048
+PARAMETER num_predict 16384
+
+# Präzise Syntax und stabiles Tool-Calling
+PARAMETER temperature 0.2
+PARAMETER top_p 0.95
+PARAMETER repeat_penalty 1.05
+

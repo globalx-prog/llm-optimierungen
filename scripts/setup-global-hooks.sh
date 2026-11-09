@@ -1,0 +1,1 @@
+../setup/04-setup-global-hooks.sh

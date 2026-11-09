@@ -1,0 +1,86 @@
+# ==============================================================================
+# Lokaler Speech-to-Text (STT) & Text-to-Speech (TTS) Service
+# Kompatibel mit Open WebUI, Cline / VS Code & systemweitem Linux-Diktat
+# ==============================================================================
+#
+# Architektur-Vorteile:
+# - Bietet eine 100% OpenAI-kompatible Audio-API (/v1/audio/transcriptions & /v1/audio/speech)
+# - CPU-optimiert via CTranslate2 (INT8): Verbraucht 0 MB VRAM auf deiner AMD Radeon W7800,
+#   sodass die vollen 48 GB VRAM für große LLMs (qwen3-next-80b, hermes3-70b) frei bleiben!
+# - Integriert in dein bestehendes Docker-Netzwerk 'ai-network'
+# - Direkte Anbindung an Open WebUI und lokale Desktop-Diktier-Skripte
+#
+# Start:   docker compose -f llm-optimierungen/spracheingabe-setup/docker-compose.yml up -d
+# Stopp:   docker compose -f llm-optimierungen/spracheingabe-setup/docker-compose.yml down
+# ==============================================================================
+
+name: voice-stack
+
+services:
+  # ----------------------------------------------------------------------------
+  # Speaches / Faster-Whisper: OpenAI-kompatible Speech-to-Text & TTS API
+  # ----------------------------------------------------------------------------
+  whisper-stt:
+    image: ghcr.io/speaches-ai/speaches:latest-cpu
+    container_name: whisper-stt
+    restart: unless-stopped
+    environment:
+      # Standardmodell: whisper-large-v3-turbo (höchste Präzision, extrem schnell auf CPU)
+      - WHISPER__MODEL=Systran/faster-whisper-large-v3-turbo
+      # Rechenpräzision für CPU: int8 für maximale Geschwindigkeit und minimalen RAM-Bedarf
+      - WHISPER__COMPUTE_TYPE=int8
+      # CPU-Threads für Inferenz (automatisch oder festlegen)
+      - WHISPER__CPU_THREADS=4
+      # Standard-Sprache (deutsch) - kann aber auch mehrsprachig transkribieren
+      - WHISPER__LANGUAGE=de
+      # Logging-Level
+      - LOG_LEVEL=info
+      # Cache-Verzeichnis für heruntergeladene Modelle
+      - HF_HOME=/root/.cache/huggingface
+    ports:
+      # Nur auf Loopback binden (Sicherheits-Standard deines Stacks)
+      - "127.0.0.1:8000:8000"
+    volumes:
+      # Persistenter Modell-Cache (verhindert erneuten Download beim Neustart)
+      - whisper-models:/root/.cache/huggingface
+    networks:
+      - ai-network
+    # --- Container-Härtung ---
+    security_opt:
+      - no-new-privileges:true
+    pids_limit: 256
+    healthcheck:
+      test: ["CMD-SHELL", "curl --silent --fail http://localhost:8000/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 40s
+
+  # ----------------------------------------------------------------------------
+  # Optional: Piper TTS (Schnelle, natürliche lokale Sprachausgabe)
+  # ----------------------------------------------------------------------------
+  # Kann in Open WebUI als Audio-Output / Voice Call Stimme gewählt werden
+  piper-tts:
+    image: rhasspy/wyoming-piper:latest
+    container_name: piper-tts
+    restart: unless-stopped
+    command: --voice de_DE-thorsten-high
+    ports:
+      - "127.0.0.1:10200:10200"
+    volumes:
+      - piper-data:/data
+    networks:
+      - ai-network
+    security_opt:
+      - no-new-privileges:true
+    pids_limit: 128
+
+volumes:
+  whisper-models:
+    name: whisper-models
+  piper-data:
+    name: piper-data
+
+networks:
+  ai-network:
+    external: true

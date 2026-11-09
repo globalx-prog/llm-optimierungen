@@ -1,0 +1,5 @@
+﻿Modell-Name;Architektur;Quantisierung;Größe auf SSD / VRAM;Freier VRAM auf W7800 (48GB);Max. VRAM-Kontext;Reale Speed (W7800);Coding Score (1-10);Gesamt Score (100);Empfohlener Einsatzzweck
+qwen2.5-72b-speed;Dense (72.7B aktiv);IQ4_XS;~39,7 GB;~4,5 GB frei;32k (bis 128k);9,1–12,0 t/s (Ollama) / 33,6 t/s (Spekulativ);9.8;96;Der absolute Qualitäts-König: 33,6 t/s mit 0.5B Draft (3,7x Speedup!), 97% Draft-Trefferquote.
+qwen3-coder-quality;MoE (30.5B / ~3.3B aktiv);Q8_0;~32,0 GB;~14,5 GB frei;32k stabil;61,6 t/s (gemessen);9.6;93;Verlustfreie 8-Bit-Präzision für Compilerbau, formale Syntax & wissenschaftliche Algorithmen.
+qwen3-coder-speed;MoE (30.5B / ~3.3B aktiv);Q4_K_M;~18,5 GB;~27,4 GB frei (Riesig);128k+ nativ im VRAM;75,4–80,6 t/s (gemessen);9.5;94;Der Durchsatz-König: Cline, Roo Code & VS Code. 0ms Lag, tippt doppelt so schnell, schluckt ganze Codebasen.
+qwen2.5-coder-32b;Dense (32.5B aktiv);Q4_K_M;~19,5 GB;~24,5 GB frei;32k (bis 64k);55–65 t/s;9.2;91;Klassischer Coder der 2.5-Generation: Extrem solide Syntax, kompakter VRAM-Bedarf für Offline-Entwicklung.

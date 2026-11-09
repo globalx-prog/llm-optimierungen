@@ -1,0 +1,1 @@
+../spracheingabe-setup/scripts/test_stt.sh

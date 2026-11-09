@@ -1,0 +1,32 @@
+[Unit]
+Description=llama-swap Dynamic Model Server & Proxy
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=clemi
+Group=clemi
+WorkingDirectory=/home/clemi/Projekte/LLM/llm-optimierungen
+
+# Befehl zum Ausführen der nativen llama-swap Binary
+ExecStart=/usr/local/bin/llama-swap -config /home/clemi/Projekte/LLM/llm-optimierungen/configs/llama-swap/config.yaml -listen 127.0.0.1:5002
+
+Restart=always
+RestartSec=3
+
+# Systemd OOM-Schutz: Verhindert Systemabsturz bei Speicherüberlauf
+MemoryMax=56G
+OOMScoreAdjust=500
+
+# GPU & ROCm Umgebungsvariablen für AMD Radeon Pro W7800
+Environment="HSA_OVERRIDE_GFX_VERSION=11.0.0"
+Environment="ROCR_VISIBLE_DEVICES=0"
+Environment="PATH=/usr/local/bin:/usr/bin:/bin"
+
+# Standard-Limits für offene Deskriptoren und Threads
+LimitNOFILE=65536
+LimitNPROC=65536
+
+[Install]
+WantedBy=default.target

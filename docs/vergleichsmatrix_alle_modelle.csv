@@ -1,0 +1,33 @@
+﻿Rang & Modell;Host / Umgebung;Kategorie / Architektur;Primärer Fokus / Spezialisierung;Coding & Cline (1-10);Deep Reasoning (1-10);Allround & Agenten (1-10);RAG & Kontext (1-10);Zensur-Freiheit (1-10);Kontext-Fenster;Speed (Tokens/s);Laufende Kosten;Gesamt Score (100)
+1. Claude 4.5 Opus;Cloud (Anthropic);👑 Next-Gen Frontier;System-Design, autonome Multi-File Agenten & Nuancen;10.0;9.9;10.0;9.9;3.0;500k – 1M;35–50 t/s;Sehr hoch ($$$$$);99
+2. Argon 4;Cloud (OpenAI/Frontier);👑 Next-Gen Reasoning;Neuartige Proof-Synthese, tiefe CoT-Architektur & Mathe;9.8;10.0;9.6;9.7;3.5;256k – 500k;40–60 t/s;Sehr hoch ($$$$);98
+3. Gemini 3.8 Pro;Cloud (Google);👑 Hyper-Kontext Multimodal;2M–5M Hyper-RAG, Audio/Video-Archive & Tool-Calling;9.7;9.8;9.8;10.0;4.0;2.000k–5.000k;70–110 t/s;Moderat ($$);98
+4. qwen2.5-72b-speed;Lokal (AMD W7800 48GB);👑 Stark (Dense 72B);Weltweit bestes Open-Source Coding: Syntax, JSON & Math;9.8;9.5;9.4;9.2;7.5;32k (bis 128k);11 t/s (Ollama) / 33,6 t/s (Spekulativ);0,00 € (Gratis);96
+5. Claude 3.5 / 3.7 Sonnet;Cloud (Anthropic);👑 Stark (Dense);Coding, Cline & autonome Software-Agenten;10.0;9.5;9.9;9.6;4.0;200k;60–80 t/s;Hoch ($$$);98
+6. Claude 3 / 3.5 Opus;Cloud (Anthropic);👑 Stark (Dense);Literarische Tiefe, Recht & philosophische Nuancen;9.3;9.6;9.8;9.8;3.5;200k;30–45 t/s;Extrem hoch ($$$$$);97
+7. OpenAI o1;Cloud (OpenAI);👑 Stark (CoT Reasoning);Mathematik, formale Beweise & schwere Algorithmen;9.4;10.0;9.0;9.2;3.5;200k;20–40 t/s;Sehr hoch ($$$$);96
+8. DeepSeek-R1 (671B);Cloud (DeepSeek);👑 Stark (MoE 37B aktiv);Deep Reasoning, CoT & Logik (Open-Weights);9.3;10.0;9.2;9.3;5.5;128k;30–50 t/s;Sehr günstig ($);96
+9. deepseek-r1-70b-speed;Lokal (AMD W7800 48GB);👑 Stark (Dense 70B);Deep Reasoning & CoT-Denkketten: o1-mini Niveau lokal;9.2;9.9;9.0;9.0;7.0;32k (bis 128k);11 t/s (Ollama) / 14,0 t/s (N-Gram);0,00 € (Gratis);95
+10. llama3.3-70b-speed;Lokal (AMD W7800 48GB);👑 Stark (Dense 70B);Weltklasse Allround-Assistenz, Agenten & Tool-Use;9.1;9.2;9.8;9.4;7.5;32k (bis 128k);12 t/s (Ollama) / 25,6 t/s (Spekulativ);0,00 € (Gratis);95
+10b. llama3.3-70b-abliterated;Lokal (AMD W7800 48GB);👑 Stark (Dense 70B);100% Unzensiertes Flaggschiff ohne Guardrails & Refusals;9.1;9.2;9.8;9.4;9.9;32k (bis 128k);10 t/s (Ollama) / 30,0 t/s (Spekulativ);0,00 € (Gratis);95
+11. Gemini 1.5 / 2.0 Pro;Cloud (Google);👑 Stark (MoE / Dense);2M Hyper-RAG, Monorepos & Multimodal-Archive;9.1;9.3;9.5;10.0;4.0;2.000k (2M);50–70 t/s;Mittel ($$);95
+12. GPT-4o;Cloud (OpenAI);👑 Stark (Dense);Omnimodaler Allrounder & Text-Audio-Bild-Konsistenz;9.2;8.8;9.6;9.3;4.5;128k;80–100 t/s;Mittel ($$);94
+12b. mistral-large-123b;Lokal (Hybrid W7800);👑 Stark (Dense 123B);Monumentale 123B Parameter-Masse für tiefste Sprachanalysen;9.3;9.4;9.6;9.5;8.0;16k (bis 128k);12–15 t/s (Hybrid);0,00 € (Gratis);94
+13. Grok 3 / Grok 2;Cloud (xAI);👑 Stark (Dense / MoE);Real-Time Webdaten, unzensierter Fun-Mode & Logik;9.0;9.2;9.4;9.2;7.5;128k;50–70 t/s;Hoch ($$$);94
+13b. qwen3-coder-speed;Lokal (AMD W7800 48GB);⚡ MoE (30.5B / 3.3B aktiv);Ultra-Speed Coder für Cline & Roo: 0ms Lag, ~80 t/s!;9.5;8.5;8.8;9.0;7.5;128k–256k;75,4 – 80,6 t/s (gemessen);0,00 € (Gratis);94
+13c. qwen3-coder-quality;Lokal (AMD W7800 48GB);👑 Stark (MoE 30.5B, Q8);Verlustfreie 8-Bit-Präzision: Compiler, Syntax & Algorithmen;9.6;8.5;8.8;9.0;7.5;32k (bis 128k);61,6 t/s (gemessen);0,00 € (Gratis);93
+14. DeepSeek-V3 (671B);Cloud (DeepSeek);💰 Günstig (MoE 37B aktiv);High-Volume API-Pipelines & Code-Allround;9.1;9.0;9.3;9.4;6.0;128k;60–90 t/s;Extrem günstig ($);93
+15. Gemini 3.8 Flash;Cloud (Google);💰 Günstig (Multimodal Fast);Nativer 1M–2M Multimodal-Speed-Champion & Tool-Calling;9.0;9.2;9.2;9.8;4.5;1.000k–2.000k;130–150 t/s;Extrem günstig ($);92
+15b. mixtral-8x22b;Lokal (Hybrid W7800);👑 MoE (141B / 39B aktiv);MoE Gigant im Hybrid-Modus, flüssiges Weltwissen;8.9;9.0;9.2;9.0;7.5;16k (bis 64k);18–22 t/s (Hybrid);0,00 € (Gratis);92
+16. qwen3-next-80b-16k;Lokal (AMD W7800 48GB);👑 Stark (MoE 10/512);Deep Logic, transparente CoT-Denkspuren & Mathe;8.5;9.7;8.8;8.5;8.0;16k (bis 64k);36,5 t/s;0,00 € (Gratis);92
+17. OpenAI o3-mini;Cloud (OpenAI);💰 Günstig (CoT Reasoning);Kompaktes CoT-Reasoning & wettbewerbsnahes Coding;9.2;9.6;8.6;8.8;4.0;200k;70–90 t/s;Günstig ($);91
+17b. qwen2.5-coder-32b;Lokal (AMD W7800 48GB);👑 Stark (Dense 32B);Bewährter robuster High-Speed Coder mit viel VRAM-Puffer;9.2;8.4;8.6;8.8;7.5;32k (bis 64k);55–65 t/s;0,00 € (Gratis);91
+18. Gemini 2.0 Flash-Thinking;Cloud (Google);💰 Günstig (CoT Reasoning);Multimodales CoT-Reasoning & Diagramm-Verständnis;8.6;9.2;8.8;9.5;4.5;1.000k (1M);80–100 t/s;Günstig ($);89
+18b. mixtral-8x7b;Lokal (AMD W7800 48GB);💰 Günstig (MoE 47B / 13B);Schneller MoE Allrounder für lockeren Chat & Breitenwissen;8.2;8.0;9.0;8.5;7.5;32k;35–45 t/s;0,00 € (Gratis);88
+18c. qwen3.8-35b-distill;Lokal (AMD W7800 48GB);💰 Günstig (MoE 8/256 / Q6);Schneller analytischer Co-Pilot & ausgewogenes Reasoning;8.6;8.8;8.8;8.8;7.5;64k (bis 128k);64,7 t/s (gemessen);0,00 € (Gratis);88
+19. Gemini 2.0 Flash;Cloud (Google);💰 Günstig (MoE / Dense);Ultraschnelle Workflows (120 t/s), 1M Kontext & API;8.2;8.2;8.6;9.6;4.5;1.000k (1M);120 t/s;Fast kostenlos ($);85
+20. qwen3.8-27b-q8;Lokal (AMD W7800 48GB);👑 Stark (Dense 27B Q8);Verlustfreie 8-Bit-Präzision, Code & 32k VRAM-Kontext;8.3;8.0;8.5;9.0;7.5;32k (bis 65k);52 t/s;0,00 € (Gratis);84
+21. qwen3-obliterated;Lokal (AMD W7800 48GB);👑 Stark (Dense 27B);100% Unzensiert: Pentesting, Security & neutrale Fakten;7.8;7.5;8.2;8.8;9.6;49k (bis 65k);17,7 t/s (gemessen);0,00 € (Gratis);83
+22. Grok 2 mini;Cloud (xAI);💰 Günstig (Kompakt);Kompakte schnelle Abfragen & ungefilterter Chat;8.0;7.8;8.2;8.5;7.0;128k;100 t/s;Günstig ($);81
+23. Claude 3.5 Haiku;Cloud (Anthropic);💰 Günstig (Kompakt);Kompakte Triage, schnelles Coden & strukturierte Daten;8.0;7.4;8.0;8.2;4.0;200k;100 t/s;Günstig ($);80
+24. GPT-4o-mini;Cloud (OpenAI);💰 Günstig (Kompakt);Standard-Alltagsaufgaben & Low-Cost Automation;7.8;7.5;8.2;8.2;4.0;128k;100 t/s;Sehr günstig ($);80

@@ -1,0 +1,16 @@
+FROM hf.co/unsloth/Qwen3-Coder-30B-A3B-Instruct-GGUF:Q4_K_M
+
+# 100% VRAM Allokation für AMD Radeon Pro W7800 (48 GB)
+# MoE Architektur: ~30.5B Parameter, nur 3.3B aktiv -> Ultra-schneller Durchsatz (~80-110 t/s)
+PARAMETER num_gpu 999
+
+# Maximaler 128k Großkontext (~24.5 GB Gesamt-VRAM mit q4_0 KV-Cache -> >20 GB VRAM frei!)
+PARAMETER num_ctx 131072
+PARAMETER num_batch 2048
+PARAMETER num_predict 16384
+
+# Präzise Syntax und stabiles Tool-Calling
+PARAMETER temperature 0.2
+PARAMETER top_p 0.95
+PARAMETER repeat_penalty 1.05
+

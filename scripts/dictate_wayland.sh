@@ -1,0 +1,1 @@
+../spracheingabe-setup/scripts/dictate_wayland.sh

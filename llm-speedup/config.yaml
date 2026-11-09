@@ -1,0 +1,202 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/mostlygeek/llama-swap/refs/heads/main/config-schema.json
+# ==============================================================================
+# llama-swap / llama-proxy Speculative Decoding Configuration
+# Hardware-Optimiert für: AMD Radeon Pro W7800 (48 GB VRAM) & ROCm / Vulkan
+# ==============================================================================
+# Stellt spekulativ beschleunigte Modelle über eine OpenAI-kompatible API bereit:
+# http://localhost:5002/v1/chat/completions
+# ==============================================================================
+
+# Maximale Wartezeit beim Laden großer 70B/72B Modelle (in Sekunden)
+healthCheckTimeout: 300
+
+# Logging-Einstellungen (ermöglicht Anzeige von Token-Speed & Acceptance Rate in den Logs)
+logLevel: info
+logToStdout: "proxy,http,upstream"
+
+# Puffergröße für Request/Response-Aufzeichnungen in der UI (in MB)
+captureBuffer: 20
+metricsMaxInMemory: 1000
+
+# Globale Variablen und Standard-Flags für llama-server
+macros:
+  llama_bin: "llama-server"
+  models_dir: "/models"
+  # GPU-Optimierung für AMD Radeon Pro W7800 (48 GB GDDR6):
+  #  - Flash Attention (-fa)
+  #  - Volles Layer-Offloading (-ngl 99 auf GPU)
+  #  - KV-Cache Kompression (-ctk q4_0 -ctv q4_0) spart bis zu 75% VRAM bei Kontext
+  #  - Batch-Größe (-b 2048 -ub 512) für rasanten Prompt-Eval
+  #  - 16 Threads für Host-Zulieferung
+  gpu_flags: >-
+    -fa on
+    -ngl 99
+    -ctk q4_0
+    -ctv q4_0
+    -b 2048
+    -ub 512
+    --threads 16
+    --no-warmup
+    -np 1
+
+# ==============================================================================
+# Modell-Definitionen mit Spekulativem Decoding & N-Gram
+# ==============================================================================
+models:
+
+  # ----------------------------------------------------------------------------
+  # 👑 1. Qwen 2.5 72B Instruct (Speculative Decoding mit 0.5B Draft)
+  # ----------------------------------------------------------------------------
+  # Erwartete Geschwindigkeit: ~20–22 Tokens/s (Basis: ~11.5 t/s, +75% Speedup)
+  # VRAM: ~39.7 GB (72B) + ~0.6 GB (0.5B) + ~4.0 GB (32k KV) = ~44.3 GB (100% VRAM)
+  # ----------------------------------------------------------------------------
+  "qwen2.5-72b-speculative":
+    name: "Qwen 2.5 72B (Speculative ~20 t/s)"
+    description: "👑 Weltweit bester Open-Source Coder, beschleunigt durch Qwen2.5-0.5B Draft"
+    ttl: 3600 # 1 Stunde geladen bleiben
+    cmd: |
+      ${llama_bin}
+      -m ${models_dir}/Qwen2.5-72B-Instruct-IQ4_XS.gguf
+      -md ${models_dir}/Qwen2.5-0.5B-Instruct-Q4_K_M.gguf
+      --spec-type draft-simple
+      --spec-draft-n-max 8
+      --spec-draft-p-min 0.75
+      -c 32768
+      ${gpu_flags}
+      --port ${PORT}
+
+  # ----------------------------------------------------------------------------
+  # 🧠 2. DeepSeek-R1 Distill 70B (N-Gram Kontext-Lookup — 0 MB Zusatz-VRAM!)
+  # ----------------------------------------------------------------------------
+  # Nutzt wiederkehrende Token-Muster im Kontext (Code, Reasoning-Ketten, <think>).
+  # VRAM: ~38.0 GB (70B) + ~2.0 GB (16k KV) = ~40.0 GB (0 MB Extra-VRAM für Draft!)
+  # ----------------------------------------------------------------------------
+  "deepseek-r1-70b-speculative":
+    name: "DeepSeek-R1 70B (N-Gram Speculative)"
+    description: "🧠 Höchstes logisches Reasoning mit N-Gram Kontext-Lookup (0 MB Extra-VRAM, 40k Ctx)"
+    ttl: 3600 # 1 Stunde geladen bleiben
+    cmd: |
+      ${llama_bin}
+      -m ${models_dir}/DeepSeek-R1-Distill-Llama-70B-IQ4_XS.gguf
+      --spec-type ngram-mod
+      -c 40960
+      ${gpu_flags}
+      --port ${PORT}
+
+  # ----------------------------------------------------------------------------
+  # 🌐 3. Meta Llama 3.3 70B Instruct (Speculative Decoding mit Llama 3.2 1B Draft)
+  # ----------------------------------------------------------------------------
+  # Erwartete Geschwindigkeit: ~22–25 Tokens/s (Basis: ~12.6 t/s, +77% Speedup)
+  # VRAM: ~37.9 GB (70B) + ~1.1 GB (1B) + ~4.0 GB (32k KV) = ~43.0 GB (100% VRAM)
+  # ----------------------------------------------------------------------------
+  "llama3.3-70b-speculative":
+    name: "Llama 3.3 70B (Speculative ~22 t/s)"
+    description: "🌐 Metas Flaggschiff Allround & Agenten, beschleunigt durch Llama-3.2-1B Draft"
+    ttl: 3600 # 1 Stunde geladen bleiben
+    cmd: |
+      ${llama_bin}
+      -m ${models_dir}/Llama-3.3-70B-Instruct-IQ4_XS.gguf
+      -md ${models_dir}/Llama-3.2-1B-Instruct-Q4_K_M.gguf
+      --spec-type draft-simple
+      --spec-draft-n-max 8
+      --spec-draft-p-min 0.75
+      --chat-template-file ${models_dir}/llama3_clean.jinja
+      -c 32768
+      ${gpu_flags}
+      --port ${PORT}
+
+  # ----------------------------------------------------------------------------
+  # 🔓 3b. Llama 3.3 70B Abliterated (Unzensiertes Flaggschiff mit 1B Draft)
+  # ----------------------------------------------------------------------------
+  "llama3.3-70b-abliterated-speculative":
+    name: "Llama 3.3 70B Abliterated (Speculative ~22 t/s)"
+    description: "🔓 Unzensiertes 70B Modell ohne Guardrails, beschleunigt durch Llama-3.2-1B Draft"
+    ttl: 3600
+    cmd: |
+      ${llama_bin}
+      -m ${models_dir}/Llama-3.3-70B-Instruct-abliterated-IQ4_XS.gguf
+      -md ${models_dir}/Llama-3.2-1B-Instruct-Q4_K_M.gguf
+      --spec-type draft-simple
+      --spec-draft-n-max 8
+      --spec-draft-p-min 0.75
+      --chat-template-file ${models_dir}/llama3_clean.jinja
+      -c 32768
+      ${gpu_flags}
+      --port ${PORT}
+
+  # ----------------------------------------------------------------------------
+  # 💻 4. Qwen 2.5 Coder 32B (Speculative ~60 t/s)
+  # ----------------------------------------------------------------------------
+  "qwen2.5-coder-32b-speculative":
+    name: "Qwen 2.5 Coder 32B (Speculative ~60 t/s, 64k Ctx)"
+    description: "💻 High-Speed Coding für Cline & OpenCode mit Qwen2.5-Coder-1.5B Draft (64k Kontext)"
+    ttl: 3600
+    cmd: |
+      ${llama_bin}
+      -m ${models_dir}/Qwen2.5-Coder-32B-Instruct-Q4_K_M.gguf
+      -md ${models_dir}/Qwen2.5-Coder-1.5B-Instruct-Q4_K_M.gguf
+      --spec-type draft-simple
+      --spec-draft-n-max 8
+      --spec-draft-p-min 0.8
+      -c 65536
+      ${gpu_flags}
+      --port ${PORT}
+
+  # ----------------------------------------------------------------------------
+  # ⚡ 5. Qwen 2.5 72B N-Gram Lookup Decoding (Zero Extra-VRAM!)
+  # ----------------------------------------------------------------------------
+  # Nutzt wiederkehrende Token-Sequenzen im Kontext (Code, JSON, Markdown).
+  # Benötigt 0 MB zusätzlichen VRAM für ein Draft-Modell!
+  # ----------------------------------------------------------------------------
+  "qwen2.5-72b-ngram":
+    name: "Qwen 2.5 72B (N-Gram Mod ~12 t/s)"
+    description: "⚡ N-Gram Kontext-Lookup ohne separates Draft-Modell (0 MB Extra VRAM)"
+    ttl: 3600 # 1 Stunde geladen bleiben
+    cmd: |
+      ${llama_bin}
+      -m ${models_dir}/Qwen2.5-72B-Instruct-IQ4_XS.gguf
+      --spec-type ngram-mod
+      -c 32768
+      ${gpu_flags}
+      --port ${PORT}
+
+# ==============================================================================
+# GPU VRAM Schutz & Automatisches Modell-Swapping
+# ==============================================================================
+# Verhindert VRAM-Überlauf (OOM): Es läuft immer nur genau ein Modell zur Zeit aktiv.
+# Beim Modellwechsel in Open WebUI wird das vorherige Modell automatisch entladen.
+# ==============================================================================
+groups:
+  gpu_models:
+    swap: true
+    exclusive: true
+    members:
+      - "qwen2.5-72b-speculative"
+      - "deepseek-r1-70b-speculative"
+      - "llama3.3-70b-speculative"
+      - "llama3.3-70b-abliterated-speculative"
+      - "qwen2.5-coder-32b-speculative"
+      - "qwen2.5-72b-ngram"
+
+# ==============================================================================
+# Virtuelle Selektoren / Routing-Aliases für Open WebUI & Clients
+# ==============================================================================
+selectors:
+  "speed-champion":
+    strategy: pin
+    targets:
+      - "qwen2.5-72b-speculative"
+      - "llama3.3-70b-speculative"
+      - "llama3.3-70b-abliterated-speculative"
+    name: "Speed Champion"
+    description: "Automatische Zuweisung an das stärkste verfügbare Spekulativ-Modell"
+
+  "coding-speed":
+    strategy: pin
+    targets:
+      - "qwen2.5-coder-32b-speculative"
+      - "qwen2.5-72b-speculative"
+      - "llama3.3-70b-speculative"
+    name: "Coding Speed"
+    description: "Maximaler Durchsatz für Softwareentwicklung und Refactorings"
+

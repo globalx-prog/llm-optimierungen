@@ -1,0 +1,11 @@
+FROM hf.co/bartowski/Llama-3.3-70B-Instruct-abliterated-GGUF:Q4_K_M
+
+# Modellgröße: ~42.5 GB -> Höchste 4-Bit Präzision ohne Weigerungs-Vektoren
+PARAMETER num_gpu 999
+PARAMETER num_ctx 32768
+PARAMETER num_batch 2048
+PARAMETER num_predict 8192
+PARAMETER temperature 0.7
+PARAMETER top_p 0.9
+PARAMETER repeat_penalty 1.05
+

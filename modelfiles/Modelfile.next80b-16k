@@ -1,0 +1,9 @@
+FROM qwen3-next-80b:latest
+
+# 40 von 48 Layern auf GPU (~35 GB), 8 Layer im schnellen 61 GB RAM (~7 GB)
+PARAMETER num_gpu 40
+
+# Großer 16k Kontext möglich, ohne dass der VRAM überläuft
+PARAMETER num_ctx 16384
+PARAMETER num_predict 16384
+PARAMETER temperature 0.6

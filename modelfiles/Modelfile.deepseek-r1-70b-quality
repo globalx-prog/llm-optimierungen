@@ -1,0 +1,14 @@
+FROM hf.co/bartowski/DeepSeek-R1-Distill-Llama-70B-GGUF:Q4_K_M
+
+# Hybrid: 74 Layer auf GPU (~39.2 GB), 6 Layer in System-RAM (~3.3 GB)
+PARAMETER num_gpu 74
+PARAMETER num_thread 6
+
+# Kontext & Batching
+PARAMETER num_ctx 16384
+PARAMETER num_batch 512
+PARAMETER num_predict 16384
+
+# Sampling
+PARAMETER temperature 0.6
+PARAMETER top_p 0.95

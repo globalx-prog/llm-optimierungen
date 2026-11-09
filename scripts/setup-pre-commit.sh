@@ -1,0 +1,1 @@
+../setup/03-setup-pre-commit.sh

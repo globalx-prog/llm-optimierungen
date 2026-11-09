@@ -1,0 +1,40 @@
+# OS generated files
+.DS_Store
+*.swp
+*.tmp
+*~
+
+# Logs & Runtime
+*.log
+__pycache__/
+
+# Secrets
+**/.env
+
+# Generierte Bilder, Videos, Audio & Output-Ordner (NIEMALS committen)
+output/
+outputs/
+**/output/
+**/outputs/
+temp/
+generated/
+*.png
+*.jpg
+*.jpeg
+*.webp
+*.gif
+*.mp4
+*.mkv
+*.webm
+*.mov
+*.avi
+*.wav
+*.mp3
+*.flac
+
+# Modelle & Gewichte
+*.gguf
+*.safetensors
+*.bin
+*.pt
+*.pth

@@ -1,0 +1,13 @@
+FROM /home/clemi/Projekte/LLM/models/mistral-large-123b/Mistral-Large-Instruct-2407-Q4_K_M/Mistral-Large-Instruct-2407-Q4_K_M-00001-of-00002.gguf
+# Hybrid: 46 Layer auf GPU (~37.7 GB VRAM), 42 Layer in System-RAM (~34.3 GB RAM)
+PARAMETER num_gpu 46
+PARAMETER num_thread 6
+
+# Kontext & Batching
+PARAMETER num_ctx 16384
+PARAMETER num_batch 512
+PARAMETER num_predict 8192
+
+# Sampling
+PARAMETER temperature 0.4
+PARAMETER top_p 0.9

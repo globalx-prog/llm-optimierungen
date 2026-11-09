@@ -1,0 +1,14 @@
+FROM hf.co/bartowski/Llama-3.3-70B-Instruct-GGUF:IQ4_XS
+
+# 100% VRAM (Alle 80 Layer auf AMD Radeon Pro W7800)
+# Modellgröße: ~37.9 GB -> passt komplett in VRAM -> max. Speed (~42-48 t/s)
+PARAMETER num_gpu 999
+
+# Kontext & Batching (32k passt voll in VRAM auf der W7800)
+PARAMETER num_ctx 32768
+PARAMETER num_batch 2048
+PARAMETER num_predict 8192
+
+# Sampling
+PARAMETER temperature 0.5
+PARAMETER top_p 0.9

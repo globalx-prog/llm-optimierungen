@@ -1,0 +1,16 @@
+FROM hf.co/TheBloke/Mixtral-8x7B-Instruct-v0.1-GGUF:Q4_K_M
+
+# 100% VRAM Allokation für AMD Radeon Pro W7800 (48 GB)
+# MoE Architektur: 47B Gesamtparameter, aber nur 13B aktiv pro Token (~35-50 t/s)
+PARAMETER num_gpu 999
+
+# Kontext & Batching
+PARAMETER num_ctx 32768
+PARAMETER num_batch 2048
+PARAMETER num_predict 8192
+
+# Sampling-Parameter
+PARAMETER temperature 0.7
+PARAMETER top_p 0.9
+PARAMETER repeat_penalty 1.05
+
